@@ -1,58 +1,56 @@
-# Turning on payments (your one remaining task, ~10 minutes)
+# Payments: current state and your one remaining task
 
-The paywall is fully built and deployed but **dormant**: while `paymentLink` in
-`config.js` is empty, the site behaves as a free tool. The moment you paste a
-payment link and push, the site automatically switches to:
+## How the site works now (accounts are LIVE)
 
-- Scanning stays free (anyone can paste a resume + job description and hit Check)
-- **Results appear blurred behind a one-time $5 unlock**
-- Buyers get a license/unlock code — entering it reveals results and unlocks
-  unlimited scans + the PDF report **forever, on any device** (the code is
-  their "account"; it's saved in their browser so they stay signed in)
-- A "★ Pro / sign out" chip appears in the header for unlocked users
+- Anyone can scan for free, unlimited times.
+- **Viewing results requires an account** (email + password, instant — no
+  confirmation email). Accounts live in Supabase project `resumeradar`
+  (org GreenLit): https://supabase.com/dashboard/project/fcuaaqvewgerfucbeybk
+- Each account has a `paid` flag (database table `profiles`, protected by RLS —
+  users can read their own flag but can never set it themselves).
+- While `paymentLink` in `config.js` is empty (current state): a free account
+  is enough to see results.
+- Once `paymentLink` is set: signed-in users additionally need `paid = true`.
+  They see a "$5 one-time unlock" card with a checkout button (their email
+  prefilled) and an "I've paid — refresh my account" button. The unlock follows
+  the account — sign in anywhere, results are unlocked.
 
-Payments need an account in **your** name (every provider legally requires
-your identity and bank details), which is the one thing that can't be done
-for you. Shortest path:
+## Your one remaining task (~10 min): create the payment account
 
-## Recommended: Lemon Squeezy (or Gumroad — same idea)
+1. Sign up at **lemonsqueezy.com**, connect your bank/PayPal.
+2. Create product: "ResumeRadar — Lifetime Unlock", digital, **$5 one-time**.
+3. In Lemon Squeezy → Settings → Webhooks: add a webhook pointing to
+   `https://fcuaaqvewgerfucbeybk.supabase.co/functions/v1/payment-webhook`
+   with event **order_created**, and copy the **signing secret**.
+4. Tell Claude (or do it yourself):
+   - Deploy the webhook (code is ready in `supabase/functions/payment-webhook/`):
+     ```
+     npx supabase login
+     npx supabase functions deploy payment-webhook --project-ref fcuaaqvewgerfucbeybk --no-verify-jwt
+     npx supabase secrets set LS_WEBHOOK_SECRET=<signing secret> --project-ref fcuaaqvewgerfucbeybk
+     ```
+   - Paste the product's payment link into `paymentLink` in `config.js`,
+     commit, push.
 
-1. Sign up at lemonsqueezy.com (or gumroad.com) and connect your bank/PayPal.
-2. Create a product: **"ResumeRadar — Lifetime Unlock"**, digital product,
-   price **$5** one-time (not subscription).
-3. Best option — enable **license keys** on the product, then put your store ID
-   and product ID into the `lemonSqueezy` section of `config.js`. Every buyer
-   gets a unique key that validates automatically (and you can revoke leaked
-   keys from the Lemon Squeezy dashboard).
-   Simple option — put the shared unlock code from `PRO-UNLOCK-CODE.txt`
-   (local file on your machine, never committed) in the product's
-   receipt/thank-you message.
-4. Copy the product's **payment link** (`https://yourstore.lemonsqueezy.com/buy/...`).
-5. Paste it into `paymentLink: ""` in `config.js`.
-6. Push:
-   ```
-   git add config.js
-   git commit -m "Enable payments"
-   git push
-   ```
-   (Or just ask Claude to do steps 5–6.)
+From then on: buyer pays → Lemon Squeezy calls the webhook → account flips to
+`paid = true` → their results unlock everywhere, forever. Fully automatic.
 
-## Important: update your forum posts when you flip this on
+## Manual operations (Supabase SQL editor, or ask Claude)
 
-The current MARKETING.md templates pitch a "free tool" — that's only honest
-while the gate is off. Once payments are on, use the paywall-era template at
-the bottom of MARKETING.md ("$5 once vs Jobscan's $50/month" — still a strong
-pitch, communities respect honest one-time pricing far more than subscriptions).
+- Comp a user / fix a payment made with a different email:
+  `update public.profiles set paid = true where email = 'their@email.com';`
+- See signups: `select email, paid, created_at from public.profiles order by created_at desc;`
 
-## Honest limitations
+## Notes
 
-- The gate is client-side (this site has no server). A tech-savvy user could
-  read results from the page source. For a $5 product at this stage that's
-  acceptable leakage; real enforcement would need a backend later.
-- The shared-code option means one leaked code unlocks everyone — prefer
-  Lemon Squeezy license keys if you expect real volume.
-
-## Optional
-
-- **Tip jar:** paste a Buy Me a Coffee URL into `tipLink` in `config.js` —
-  a "☕ Support this tool" footer link appears.
+- Email confirmation is disabled (Supabase free tier only sends ~2 emails/hour,
+  which would break signups). Password reset emails share that limit — if the
+  site takes off, add a custom SMTP provider (Resend free tier works) in
+  Supabase → Auth → SMTP.
+- A buyer who checks out with a different email than their account won't
+  auto-unlock — the lock card tells them to use the same email; fix stragglers
+  with the SQL above.
+- `SUPABASE-NOTES.txt` (local only, gitignored) has the database password and
+  pooler host (aws-1-us-east-1.pooler.supabase.com, user postgres.fcuaaqvewgerfucbeybk).
+- Test account exists: rr-test-account@mailinator.com (paid=true, used for
+  end-to-end verification). Safe to delete.

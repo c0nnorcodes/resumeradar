@@ -31,7 +31,7 @@
     <div class="container">
       <div class="privacy-badge">🔒 100% private — your resume never leaves your browser</div>
       <h1>Does your resume actually match<br>the job you're applying for?</h1>
-      <p class="subtitle">Paste your resume and the job description. Get an instant match score, the exact keywords you're missing, and a resume health check. <strong>Free. Unlimited. No signup.</strong></p>
+      <p class="subtitle">Paste your resume and the job description. Get an instant match score, the exact keywords you're missing, and a resume health check. <strong>Unlimited scans with a free account.</strong></p>
     </div>
   </section>
 
@@ -151,7 +151,7 @@
         <div class="how-card">
           <div class="how-num">2</div>
           <h3>Analyzed on your device</h3>
-          <p>JavaScript in your own browser compares them against a database of 400+ skills across every industry. Nothing is uploaded, stored, or tracked.</p>
+          <p>JavaScript in your own browser compares them against a database of 400+ skills across every industry. Your resume is never uploaded — only your email and unlock status live on your account.</p>
         </div>
         <div class="how-card">
           <div class="how-num">3</div>
@@ -164,12 +164,12 @@
     <section id="faq" class="info-section">
       <h2>FAQ</h2>
       <details>
-        <summary>Is this really free? What's the catch?</summary>
-        <p>Really free, unlimited scans, no account, no email capture. There's no catch — this is a static web page with no server. It costs essentially nothing to run, so it costs nothing to use.</p>
+        <summary>Is this free? What's the catch?</summary>
+        <p>Scanning is unlimited, and an account is all you need to view results. Compare that to Jobscan's $49.95/month for the same job. If a one-time unlock price is shown, that's the entire cost — no subscription, ever.</p>
       </details>
       <details>
         <summary>Where does my resume go when I click "Check my match"?</summary>
-        <p>Nowhere. The analysis runs as JavaScript inside your browser tab. You can disconnect from the internet after the page loads and it still works. Close the tab and everything is gone.</p>
+        <p>Nowhere. The analysis runs as JavaScript inside your browser tab — your resume is never uploaded. Your account stores only your email and unlock status, nothing else.</p>
       </details>
       <details>
         <summary>Will a low score get me auto-rejected by an ATS?</summary>
@@ -195,13 +195,15 @@
     <div class="container">
       <p>🎯 ResumeRadar — free, private, unlimited resume matching. Found it useful? Share it with someone job hunting.</p>
       <p><a id="tip-link" href="#" target="_blank" rel="noopener" hidden>☕ Support this tool</a></p>
-      <p class="fine">No accounts. No tracking. No data collection. Your resume stays on your device.</p>
+      <p class="fine">No tracking. Your resume never leaves your device — your account stores only your email and unlock status.</p>
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="config.js"></script>
   <script src="skills.js"></script>
   <script src="app.js"></script>
   <script src="pro.js"></script>
+  <script src="auth.js"></script>
 </body>
 </html>

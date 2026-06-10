@@ -242,6 +242,16 @@ textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
 .lock-buy { display: block; text-decoration: none; }
 .lock-fine { color: var(--ink-soft); font-size: .8rem; margin: 14px 0 0 !important; }
 
+.auth-form { display: flex; flex-direction: column; gap: 10px; }
+.auth-form input {
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 11px 14px; font: inherit; font-size: .93rem;
+}
+.auth-form input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.auth-btn { width: 100%; }
+.auth-toggle { font-size: .85rem; color: var(--ink-soft); margin: 2px 0 0; }
+.auth-toggle a { color: var(--accent); font-weight: 600; text-decoration: none; }
+
 .account-chip {
   margin-left: 22px;
   background: var(--good-soft); color: var(--good);
