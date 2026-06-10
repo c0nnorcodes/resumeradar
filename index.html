@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResumeRadar — Free Resume vs Job Description Match Checker (100% Private)</title>
+  <meta name="description" content="Paste your resume and a job description to instantly see your keyword match score, missing skills, and resume health checks. Free, unlimited, no signup — everything runs in your browser and your resume never leaves your device.">
+  <meta property="og:title" content="ResumeRadar — Free Resume Match Checker">
+  <meta property="og:description" content="See how well your resume matches any job description. Free, unlimited, no signup, 100% private — runs entirely in your browser.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🎯</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-row">
+      <div class="logo">🎯 Resume<span>Radar</span></div>
+      <nav>
+        <a href="#how">How it works</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="privacy-badge">🔒 100% private — your resume never leaves your browser</div>
+      <h1>Does your resume actually match<br>the job you're applying for?</h1>
+      <p class="subtitle">Paste your resume and the job description. Get an instant match score, the exact keywords you're missing, and a resume health check. <strong>Free. Unlimited. No signup.</strong></p>
+    </div>
+  </section>
+
+  <main class="container">
+
+    <section class="tool" id="tool">
+      <div class="input-grid">
+        <div class="input-card">
+          <div class="input-head">
+            <h2>1 · Your resume</h2>
+            <label class="upload-btn">
+              Upload PDF / DOCX / TXT
+              <input type="file" id="file-input" accept=".pdf,.docx,.txt,.md" hidden>
+            </label>
+          </div>
+          <textarea id="resume-input" placeholder="Paste your resume text here, or upload a file — it's parsed on your device and never sent anywhere."></textarea>
+          <div class="input-foot">
+            <span id="file-status"></span>
+            <span class="word-count" id="resume-count"></span>
+          </div>
+        </div>
+
+        <div class="input-card">
+          <div class="input-head">
+            <h2>2 · The job description</h2>
+          </div>
+          <textarea id="jd-input" placeholder="Paste the full job posting here — responsibilities, requirements, all of it. More text = better analysis."></textarea>
+          <div class="input-foot">
+            <span></span>
+            <span class="word-count" id="jd-count"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="analyze-row">
+        <button id="analyze-btn" class="btn-primary">Check my match →</button>
+        <button id="sample-btn" class="btn-ghost">Try with sample data</button>
+        <p id="input-error" class="input-error" role="alert"></p>
+      </div>
+    </section>
+
+    <section id="results" hidden>
+      <div class="score-card">
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 200 200" class="gauge">
+            <circle cx="100" cy="100" r="84" class="gauge-bg"/>
+            <circle cx="100" cy="100" r="84" class="gauge-fg" id="gauge-fg" transform="rotate(-90 100 100)"/>
+          </svg>
+          <div class="gauge-label">
+            <div id="score-number">0%</div>
+            <div class="gauge-sub">match</div>
+          </div>
+        </div>
+        <div class="score-text">
+          <h2 id="score-headline"></h2>
+          <p id="score-advice"></p>
+          <div class="stats-row">
+            <div class="stat"><span id="stat-hard"></span><label>Hard skills</label></div>
+            <div class="stat"><span id="stat-other"></span><label>Other keywords</label></div>
+            <div class="stat"><span id="stat-soft"></span><label>Soft skills</label></div>
+            <div class="stat"><span id="stat-checks"></span><label>Health checks</label></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <h3>🛠 Hard skills &amp; tools</h3>
+        <p class="section-hint">The most important section. These are specific skills the job asks for — recruiters and ATS filters search for these exact terms.</p>
+        <h4 class="miss-head">Missing from your resume <small>(click a chip to copy it)</small></h4>
+        <div id="hard-missing"></div>
+        <h4 class="hit-head">Already on your resume</h4>
+        <div id="hard-matched"></div>
+      </div>
+
+      <div class="result-section">
+        <h3>🔑 Other keywords from the posting</h3>
+        <p class="section-hint">Terms this specific job description repeats. Mirroring the posting's language helps both ATS search and the human skimming your resume.</p>
+        <h4 class="miss-head">Missing</h4>
+        <div id="other-missing"></div>
+        <h4 class="hit-head">Covered</h4>
+        <div id="other-matched"></div>
+      </div>
+
+      <div class="result-section">
+        <h3>💬 Soft skills</h3>
+        <p class="section-hint">Don't just list these — prove them. "Led 4-person team through product launch" beats "leadership".</p>
+        <h4 class="miss-head">Missing</h4>
+        <div id="soft-missing"></div>
+        <h4 class="hit-head">Covered</h4>
+        <div id="soft-matched"></div>
+      </div>
+
+      <div class="result-section">
+        <h3>🩺 Resume health check</h3>
+        <ul id="checks-list" class="checks"></ul>
+      </div>
+
+      <div class="result-actions">
+        <button id="copy-missing" class="btn-primary">Copy all missing keywords</button>
+        <button id="report-btn" class="btn-secondary">📄 Download full report (PDF) <span id="pro-badge" class="pro-badge" hidden>PRO</span></button>
+        <a href="#tool" class="btn-ghost">↑ Edit and re-check</a>
+      </div>
+
+      <div class="honesty-note">
+        <strong>One honest note:</strong> only add keywords for skills you actually have. The goal isn't to trick a filter — it's to make sure the skills you genuinely have aren't invisible because you used different words than the job posting did.
+      </div>
+    </section>
+
+    <section id="how" class="info-section">
+      <h2>How it works</h2>
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="how-num">1</div>
+          <h3>Paste both texts</h3>
+          <p>Your resume (paste or upload) and the job posting you're targeting.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-num">2</div>
+          <h3>Analyzed on your device</h3>
+          <p>JavaScript in your own browser compares them against a database of 400+ skills across every industry. Nothing is uploaded, stored, or tracked.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-num">3</div>
+          <h3>Fix the gaps</h3>
+          <p>Get your match score, the exact missing keywords, and concrete writing fixes. Edit, re-check, apply.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="info-section">
+      <h2>FAQ</h2>
+      <details>
+        <summary>Is this really free? What's the catch?</summary>
+        <p>Really free, unlimited scans, no account, no email capture. There's no catch — this is a static web page with no server. It costs essentially nothing to run, so it costs nothing to use.</p>
+      </details>
+      <details>
+        <summary>Where does my resume go when I click "Check my match"?</summary>
+        <p>Nowhere. The analysis runs as JavaScript inside your browser tab. You can disconnect from the internet after the page loads and it still works. Close the tab and everything is gone.</p>
+      </details>
+      <details>
+        <summary>Will a low score get me auto-rejected by an ATS?</summary>
+        <p>Mostly no — the idea that ATS software auto-rejects resumes below a "score" is largely a myth. What actually happens: recruiters <em>search and filter</em> by keywords, and skim each resume for seconds. If the posting says "Google Analytics" and your resume says "web analytics tools", you lose both the search and the skim. That's the real problem this tool fixes.</p>
+      </details>
+      <details>
+        <summary>How is this different from Jobscan?</summary>
+        <p>Jobscan is a polished commercial product, but it costs ~$50/month after 5 free scans and requires an account. ResumeRadar covers the core use case — keyword matching against a job description — free and unlimited, without your resume ever leaving your device.</p>
+      </details>
+      <details>
+        <summary>Should I add keywords for skills I don't have?</summary>
+        <p>No. Lying on a resume backfires in interviews and on the job. Use the missing-keyword list to (a) surface skills you have but described differently, and (b) honestly assess whether the role is a fit.</p>
+      </details>
+      <details>
+        <summary>My PDF pasted as garbage text. What do I do?</summary>
+        <p>Some PDFs (especially exported from design tools) store text as images. Open your resume in Word/Google Docs and copy the text from there, or use the original document.</p>
+      </details>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>🎯 ResumeRadar — free, private, unlimited resume matching. Found it useful? Share it with someone job hunting.</p>
+      <p><a id="tip-link" href="#" target="_blank" rel="noopener" hidden>☕ Support this tool</a></p>
+      <p class="fine">No accounts. No tracking. No data collection. Your resume stays on your device.</p>
+    </div>
+  </footer>
+
+  <div id="pro-modal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pro-title">
+      <button id="pro-close" class="modal-close" aria-label="Close">×</button>
+      <h3 id="pro-title">📄 Full report is a Pro feature</h3>
+      <p>The scanner is free forever. The downloadable PDF report — your score, every keyword gap, and an action plan you can work through offline — is a one-time <strong id="pro-price"></strong> purchase. No subscription, yours for life on this device.</p>
+      <a id="pro-buy" class="btn-primary modal-buy" href="#" target="_blank" rel="noopener">Get Pro — one-time payment</a>
+      <div class="modal-divider">already purchased?</div>
+      <div class="unlock-row">
+        <input id="pro-code" type="text" placeholder="Paste your license / unlock code">
+        <button id="pro-unlock-btn" class="btn-secondary">Unlock</button>
+      </div>
+      <p id="pro-msg" class="pro-msg"></p>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="skills.js"></script>
+  <script src="app.js"></script>
+  <script src="pro.js"></script>
+</body>
+</html>
