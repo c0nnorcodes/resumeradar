@@ -24,8 +24,10 @@ const PRO_CONFIG = {
     productId: "", // e.g. "67890"
   },
 
-  // Option B — offline unlock code (works with any payment provider)
-  unlockCodeHash: "",
+  // Option B — offline unlock code (works with any payment provider).
+  // The matching plaintext code lives in PRO-UNLOCK-CODE.txt on the owner's
+  // machine only (gitignored) — put it in your payment provider's receipt page.
+  unlockCodeHash: "2ded307270e69bff3c5ee4a850f12b950b63c88de33143fb5a9cccd0f7efbd6a",
 
   // Optional tip-jar link shown in the footer (Buy Me a Coffee / Ko-fi).
   tipLink: "",

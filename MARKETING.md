@@ -1,10 +1,12 @@
 # Distribution plan — zero sales, just posting
 
+The live site: **https://c0nnorcodes.github.io/resumeradar/**
+
 The product is designed so the post writes itself: **free + unlimited + no signup + your resume never leaves your browser**. You're not selling anything; you're sharing a free tool with communities that ask for exactly this every week.
 
 ## Before posting (do once)
 
-1. Deploy the site (see README) and test the link on your phone.
+1. Test the link on your phone.
 2. Use the tool yourself on a real resume + job posting so you can speak from experience.
 3. Age matters on Reddit: if your account is brand new, spend a few days commenting normally in the target subs first. Self-promo from zero-karma accounts gets removed.
 
@@ -31,15 +33,17 @@ The product is designed so the post writes itself: **free + unlimited + no signu
 >
 > The part I care most about: it runs 100% in your browser. Your resume is never uploaded anywhere — you can even go offline after the page loads. No account, no email capture, unlimited scans.
 >
-> [link] — would love feedback on what to add.
+> https://c0nnorcodes.github.io/resumeradar/ — would love feedback on what to add.
 
 **For builder communities (r/SideProject, Show HN):**
 > **Show HN / I built a client-side Jobscan alternative — resume keyword matching with zero backend**
 >
 > Job seekers pay $50/mo for keyword matching that's fundamentally a dictionary + text comparison. I built it as a static page: 359-skill dictionary with synonym matching, frequency-based keyword extraction from the posting, and resume health checks. PDF/DOCX parsed client-side with pdf.js/mammoth. No server, no tracking — privacy is the whole point when the input is people's resumes.
+>
+> https://c0nnorcodes.github.io/resumeradar/
 
 **For Discord #resources channels (short):**
-> Free tool for anyone tailoring resumes: paste your resume + a job description, get your match score + missing keywords. No signup, unlimited, and it runs fully in your browser so your resume never gets uploaded anywhere → [link]
+> Free tool for anyone tailoring resumes: paste your resume + a job description, get your match score + missing keywords. No signup, unlimited, and it runs fully in your browser so your resume never gets uploaded anywhere → https://c0nnorcodes.github.io/resumeradar/
 
 ## Cadence & etiquette
 
