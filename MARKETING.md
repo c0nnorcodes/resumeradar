@@ -52,6 +52,18 @@ The product is designed so the post writes itself: **free + unlimited + no signu
 - When people request features, say "good idea, adding it" and actually add it — then post the update in the same thread. Update posts ("I added the 3 things you asked for") often outperform launch posts.
 - The evergreen channel: whenever someone posts "is Jobscan worth it?" or "free ATS checker?" anywhere, drop the link as a helpful comment. Set a Google Alert / use Reddit search weekly for those phrases.
 
+## Template for after the paywall is on
+
+Once payments are live (see PAYMENT-SETUP.md), the "free tool" pitch above is no longer honest. Use this instead — one-time pricing vs subscriptions is itself a popular angle:
+
+> **I built a Jobscan alternative that costs $5 once instead of $50/month**
+>
+> Paste your resume + the job posting → match score, the exact keywords you're missing, and a resume health check. Scanning is free to try; seeing the full results is a one-time $5 — no subscription, unlimited scans forever, works on all your devices.
+>
+> And unlike every other resume tool: it runs 100% in your browser. Your resume is never uploaded anywhere.
+>
+> https://c0nnorcodes.github.io/resumeradar/
+
 ## What success looks like
 
 These posts historically do well because the pain is constant and the offer is unambiguous. One front-page post on r/jobs or r/InternetIsBeautiful can drive tens of thousands of visits, and since hosting is free, traffic costs you nothing. After that, SEO ("free jobscan alternative", "resume keyword checker free") compounds quietly.

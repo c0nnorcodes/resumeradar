@@ -1,8 +1,12 @@
-/* ResumeRadar Pro — one-time-purchase tier. Hidden entirely until
-   PRO_CONFIG.paymentLink is set, so the free tool stays clean. */
+/* ResumeRadar paywall + accounts-lite.
+   Model: scanning is free, but results are blurred behind a one-time $5 unlock.
+   The buyer's license key IS their account — enter it on any device to unlock.
+   The whole gate stays dormant until PRO_CONFIG.paymentLink is set, so the site
+   works as a fully free tool until payments are configured. */
 "use strict";
 
 const PRO_KEY = "rr_pro_unlocked";
+const LICENSE_STORE = "rr_license_key";
 
 function proConfigured() {
   return typeof PRO_CONFIG !== "undefined" && !!PRO_CONFIG.paymentLink;
@@ -10,8 +14,14 @@ function proConfigured() {
 function isPro() {
   return localStorage.getItem(PRO_KEY) === "yes";
 }
-function setPro() {
+function setPro(code) {
   localStorage.setItem(PRO_KEY, "yes");
+  localStorage.setItem(LICENSE_STORE, code);
+}
+function signOut() {
+  localStorage.removeItem(PRO_KEY);
+  localStorage.removeItem(LICENSE_STORE);
+  location.reload();
 }
 
 async function sha256hex(str) {
@@ -54,7 +64,109 @@ async function verifyUnlockCode(code) {
   return false;
 }
 
-// ───────────────────────── report ─────────────────────────
+// ───────────────────── results gate ─────────────────────
+
+function buildLockCard() {
+  const card = document.createElement("div");
+  card.id = "lock-card";
+  card.innerHTML = `
+    <div class="lock-icon">🔓</div>
+    <h3>Your results are ready</h3>
+    <p>Unlock ResumeRadar once for <strong>${PRO_CONFIG.price}</strong> — see this full analysis and run
+    unlimited scans forever. No subscription. Your license key is your account: enter it on any device.</p>
+    <a id="lock-buy" class="btn-primary lock-buy" href="${PRO_CONFIG.paymentLink}" target="_blank" rel="noopener">Unlock for ${PRO_CONFIG.price} →</a>
+    <div class="modal-divider">already purchased?</div>
+    <div class="unlock-row">
+      <input id="pro-code" type="text" placeholder="Paste your license / unlock code">
+      <button id="pro-unlock-btn" class="btn-secondary">Unlock</button>
+    </div>
+    <p id="pro-msg" class="pro-msg"></p>
+    <p class="lock-fine">Scanning stays private either way — your resume never leaves your browser, paid or not.</p>`;
+
+  card.querySelector("#pro-unlock-btn").addEventListener("click", async () => {
+    const input = card.querySelector("#pro-code");
+    const msg = card.querySelector("#pro-msg");
+    const btn = card.querySelector("#pro-unlock-btn");
+    btn.disabled = true; msg.textContent = "Checking…"; msg.className = "pro-msg";
+    const ok = await verifyUnlockCode(input.value);
+    btn.disabled = false;
+    if (ok) {
+      setPro(input.value.trim());
+      msg.textContent = "✓ Unlocked — welcome aboard!";
+      msg.className = "pro-msg good";
+      setTimeout(applyResultsGate, 600);
+    } else {
+      msg.textContent = "That code didn't validate. Check your purchase receipt for the exact key.";
+      msg.className = "pro-msg bad";
+    }
+  });
+  return card;
+}
+
+function updateAccountChip() {
+  const chip = document.getElementById("account-chip");
+  if (!chip) return;
+  if (isPro()) {
+    chip.hidden = false;
+    chip.innerHTML = `★ Pro &nbsp;<span class="signout">sign out</span>`;
+    chip.querySelector(".signout").onclick = () => {
+      if (confirm("Sign out? You'll need your license key to unlock again.")) signOut();
+    };
+  } else {
+    chip.hidden = true;
+  }
+}
+
+// Called by app.js after every render, and after unlock.
+function applyResultsGate() {
+  const results = document.getElementById("results");
+  if (!results) return;
+  const gated = proConfigured() && !isPro();
+  results.classList.toggle("gated", gated);
+  let card = document.getElementById("lock-card");
+  if (gated) {
+    if (!card) {
+      card = buildLockCard();
+      results.insertBefore(card, results.firstChild);
+    }
+  } else if (card) {
+    card.remove();
+  }
+  updateAccountChip();
+}
+window.applyResultsGate = applyResultsGate;
+
+// ───────────────────── page wiring ─────────────────────
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateAccountChip();
+
+  // When the paywall is active, keep the hero copy honest.
+  if (proConfigured()) {
+    const sub = document.querySelector(".subtitle strong");
+    if (sub && !isPro()) sub.textContent = `Free scan — ${PRO_CONFIG.price} once for full results, forever. No subscription.`;
+  }
+
+  if (PRO_CONFIG.tipLink) {
+    const tip = document.getElementById("tip-link");
+    if (tip) { tip.href = PRO_CONFIG.tipLink; tip.hidden = false; }
+  }
+
+  // PDF report is included in the unlock (or free while payments are unconfigured).
+  const reportBtn = document.getElementById("report-btn");
+  if (reportBtn) {
+    reportBtn.addEventListener("click", () => {
+      if (proConfigured() && !isPro()) {
+        applyResultsGate();
+        document.getElementById("lock-card")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      downloadReport();
+    });
+  }
+});
+
+// ───────────────────── PDF report ─────────────────────
 
 function reportSection(title, hint, missing, matched) {
   const list = (items, cls) => items.length
@@ -117,50 +229,3 @@ function downloadReport() {
   w.document.write(buildReportHtml(lastResult));
   w.document.close();
 }
-
-// ───────────────────────── wiring ─────────────────────────
-
-document.addEventListener("DOMContentLoaded", () => {
-  const reportBtn = document.getElementById("report-btn");
-  const modal = document.getElementById("pro-modal");
-  if (!reportBtn || !modal) return;
-
-  // Free mode: no payment link configured → Pro UI stays hidden, report stays free?
-  // No — report is the Pro feature. Until payments are configured we show it free
-  // (better launch experience), and it auto-gates once paymentLink is set.
-  const gated = proConfigured();
-  document.getElementById("pro-badge").hidden = !gated;
-  if (PRO_CONFIG.tipLink) {
-    const tip = document.getElementById("tip-link");
-    tip.href = PRO_CONFIG.tipLink;
-    tip.hidden = false;
-  }
-
-  reportBtn.addEventListener("click", () => {
-    if (!gated || isPro()) { downloadReport(); return; }
-    document.getElementById("pro-price").textContent = PRO_CONFIG.price;
-    document.getElementById("pro-buy").href = PRO_CONFIG.paymentLink;
-    modal.hidden = false;
-  });
-
-  document.getElementById("pro-close").addEventListener("click", () => { modal.hidden = true; });
-  modal.addEventListener("click", (e) => { if (e.target === modal) modal.hidden = true; });
-
-  document.getElementById("pro-unlock-btn").addEventListener("click", async () => {
-    const input = document.getElementById("pro-code");
-    const msg = document.getElementById("pro-msg");
-    const btn = document.getElementById("pro-unlock-btn");
-    btn.disabled = true; msg.textContent = "Checking…"; msg.className = "pro-msg";
-    const ok = await verifyUnlockCode(input.value);
-    btn.disabled = false;
-    if (ok) {
-      setPro();
-      msg.textContent = "✓ Unlocked — thank you! Generating your report…";
-      msg.className = "pro-msg good";
-      setTimeout(() => { modal.hidden = true; downloadReport(); }, 900);
-    } else {
-      msg.textContent = "That code didn't validate. Check your purchase receipt, or email the address on your receipt for help.";
-      msg.className = "pro-msg bad";
-    }
-  });
-});

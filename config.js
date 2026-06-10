@@ -13,7 +13,7 @@
 //       .then(b => console.log([...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("")))
 
 const PRO_CONFIG = {
-  price: "$9",
+  price: "$5",
   // Paste your Lemon Squeezy / Gumroad / Stripe payment link here.
   // While this is empty, all Pro buttons are hidden and the site is 100% free.
   paymentLink: "",

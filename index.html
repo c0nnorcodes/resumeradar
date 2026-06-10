@@ -22,6 +22,7 @@
       <nav>
         <a href="#how">How it works</a>
         <a href="#faq">FAQ</a>
+        <span id="account-chip" class="account-chip" hidden></span>
       </nav>
     </div>
   </header>
@@ -130,7 +131,7 @@
 
       <div class="result-actions">
         <button id="copy-missing" class="btn-primary">Copy all missing keywords</button>
-        <button id="report-btn" class="btn-secondary">📄 Download full report (PDF) <span id="pro-badge" class="pro-badge" hidden>PRO</span></button>
+        <button id="report-btn" class="btn-secondary">📄 Download full report (PDF)</button>
         <a href="#tool" class="btn-ghost">↑ Edit and re-check</a>
       </div>
 
@@ -197,21 +198,6 @@
       <p class="fine">No accounts. No tracking. No data collection. Your resume stays on your device.</p>
     </div>
   </footer>
-
-  <div id="pro-modal" class="modal-overlay" hidden>
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pro-title">
-      <button id="pro-close" class="modal-close" aria-label="Close">×</button>
-      <h3 id="pro-title">📄 Full report is a Pro feature</h3>
-      <p>The scanner is free forever. The downloadable PDF report — your score, every keyword gap, and an action plan you can work through offline — is a one-time <strong id="pro-price"></strong> purchase. No subscription, yours for life on this device.</p>
-      <a id="pro-buy" class="btn-primary modal-buy" href="#" target="_blank" rel="noopener">Get Pro — one-time payment</a>
-      <div class="modal-divider">already purchased?</div>
-      <div class="unlock-row">
-        <input id="pro-code" type="text" placeholder="Paste your license / unlock code">
-        <button id="pro-unlock-btn" class="btn-secondary">Unlock</button>
-      </div>
-      <p id="pro-msg" class="pro-msg"></p>
-    </div>
-  </div>
 
   <script src="config.js"></script>
   <script src="skills.js"></script>

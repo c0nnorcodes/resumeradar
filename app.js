@@ -305,6 +305,7 @@ function render(result) {
     </li>`).join("");
 
   $("results").hidden = false;
+  if (window.applyResultsGate) window.applyResultsGate();
   $("results").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
