@@ -225,6 +225,8 @@ textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
   display: flex; align-items: center; justify-content: center;
   z-index: 50; padding: 20px;
 }
+/* explicit display beats the UA [hidden] rule, so restate it */
+.modal-overlay[hidden] { display: none; }
 .modal {
   background: var(--surface); border-radius: 18px; box-shadow: 0 24px 64px rgba(0,0,0,.25);
   max-width: 440px; width: 100%; padding: 30px; position: relative; text-align: center;
